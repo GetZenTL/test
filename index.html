@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+ <link rel="stylesheet"
+href="https://pyscript.net/alpha/pyscript.css" />
+ <script defer
+src="https://pyscript.net/alpha/pyscript.js"></script>
+ <py-env>
+  - requests
+ </py-env>
+</head>
+
+<body>
+ <py-script>
+    import requests
+    import re
+    
+    
+    creative_base = "http://creative-quality.3lift.com/qa?tl_tactic_id="
+    
+    #Enter how many trackers should be appended for each tactic
+    tracker_count = 3
+    
+    #Copy and paste the column of tactic ids here, make sure it is between the """ block
+    tactics = \
+    """
+    12665329
+    12665330
+    12665331
+    12665332
+    12665333
+    12665334
+    """
+    #Copy and paste the column of placement ids here, make sure it is between the """ block
+    placements = \
+    """
+    Ac3ZU5
+    9OGg20
+    L39u37
+    W1FC3h
+    i0SS7r
+    ljU01W
+    """
+    
+    tactic_ids = tactics.split()
+    placement_ids = placements.split()
+    
+    def main():
+        faults = []
+    
+        if len(tactic_ids) != len(placement_ids):
+            print("!!!vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv!!!")
+            print("!!!--->Sanity Check: Please make sure inputs are valid<---!!!")
+            print("!!!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^!!!")
+            return
+    
+        for i in range(len(tactic_ids)):
+            print("checking: "+str(tactic_ids[i]))
+            url = creative_base+tactic_ids[i]
+            url_req = requests.get(url)
+            text = url_req.text
+            if (len(findall(placement_ids[i], text)) == tracker_count):
+                print("OK\n")
+            else:
+                print("!!! "+tactic_ids[i]+" Does not contain the right count/kind of tags!!!")
+                faults.append(tactic_ids[i])
+    
+        if faults:
+            print("These tactics are faulty!")
+            for id in faults:
+                print(id)
+        else:
+            print("No errors were found in the tactics. Good Job! ☺")
+    
+    
+    main()
+ </py-script>
+</body>
+</html>
